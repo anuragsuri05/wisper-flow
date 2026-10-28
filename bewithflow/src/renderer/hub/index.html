@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; img-src 'self' data: https:" />
+    <title>bewithflow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" />
+    <link rel="stylesheet" href="hub.css" />
+  </head>
+  <body>
+    <template id="mark">
+      <svg class="mark" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="1.5" y="7" width="2.6" height="8" rx="1.3" fill="currentColor" opacity=".55" />
+        <rect x="5.9" y="4" width="2.6" height="14" rx="1.3" fill="currentColor" />
+        <rect x="10.3" y="1.5" width="2.6" height="19" rx="1.3" fill="var(--violet)" />
+        <rect x="14.7" y="5" width="2.6" height="12" rx="1.3" fill="currentColor" />
+        <rect x="19.1" y="8" width="2.6" height="6" rx="1.3" fill="currentColor" opacity=".55" />
+      </svg>
+    </template>
+
+    <!-- ================= Sign in ================= -->
+    <div class="auth" data-screen="auth" hidden>
+      <div class="auth-left drag">
+        <div class="wordmark" data-mark>bewithflow</div>
+        <div class="auth-hero">
+          <h1>Don’t type,<br /><em>just speak.</em></h1>
+          <p>Hold one key in any app, say what you mean, and let go. bewithflow drops the ums, follows your corrections, and types the sentence you meant.</p>
+        </div>
+        <div class="chat-demo" aria-hidden="true">
+          <div class="chat-app">WhatsApp</div>
+          <div class="bubble said">um so can we uh move dinner to eight no wait eight thirty</div>
+          <div class="bubble sent">Can we move dinner to 8:30?</div>
+        </div>
+      </div>
+      <div class="auth-right drag">
+        <div class="auth-card">
+          <h2>Get started</h2>
+          <p class="muted">Sign in with your ChatGPT account. That’s all you need.</p>
+          <div id="auth-idle" class="auth-actions">
+            <div id="saved-accounts" class="saved"></div>
+            <button class="btn btn-primary btn-lg" id="signin-btn" data-signin="">Continue with ChatGPT</button>
+            <div class="or"><span>On ChatGPT Free?</span></div>
+            <button class="btn btn-lg" id="signin-free" data-local="1">Use bewithflow free on this computer</button>
+          </div>
+          <div id="auth-waiting" class="waiting" role="status" hidden>
+            <span class="pulse" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <div>
+              <b id="waiting-title">Finish signing in in your browser</b>
+              <p class="muted small">A ChatGPT page opened. Approve bewithflow there, then come back.</p>
+            </div>
+            <div class="row-gap">
+              <button class="btn btn-sm" id="signin-reopen">Open the page again</button>
+              <button class="btn btn-sm btn-ghost" id="signin-cancel">Cancel</button>
+            </div>
+          </div>
+          <p class="error-text" id="auth-error" role="alert"></p>
+          <button class="btn btn-primary" id="auth-free-retry" data-local="1" hidden>Use bewithflow free on this computer</button>
+          <button class="link small" id="auth-log" hidden>Show sign-in log</button>
+          <p class="muted small fine">OpenAI only lets ChatGPT Plus and Pro accounts sign in to apps like bewithflow. On Free, everything runs on this computer, no sign-in needed, and you can connect ChatGPT later.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Setup ================= -->
+    <div class="setup" data-screen="setup" hidden>
+      <div class="drag setup-top">
+        <div class="wordmark" data-mark>bewithflow</div>
+        <ol class="stepper" id="stepper" aria-label="Setup progress"></ol>
+      </div>
+      <div class="setup-body">
+        <section class="setup-card" id="setup-card" aria-live="polite"></section>
+      </div>
+    </div>
+
+    <!-- ================= Main app ================= -->
+    <div class="shell" data-screen="app" hidden>
+      <aside class="side drag">
+        <div class="wordmark" data-mark>bewithflow</div>
+        <nav class="nav" aria-label="Main">
+          <button class="nav-btn" data-nav="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></svg>
+            Home
+          </button>
+          <button class="nav-btn" data-nav="dictionary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2.5Z" /><path d="M9 8h7M9 12h5" /></svg>
+            Dictionary
+          </button>
+          <button class="nav-btn" data-nav="snippets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 4 14h7l-1 7 9-11h-7z" /></svg>
+            Snippets
+          </button>
+          <button class="nav-btn" data-nav="style">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="m13.5 6.5 4 4" /></svg>
+            Style
+          </button>
+        </nav>
+        <div class="side-foot">
+          <div class="plan-card" id="plan-card"></div>
+          <button class="nav-btn" id="open-settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" /></svg>
+            Settings
+          </button>
+          <div class="me" id="me"></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar drag"></div>
+
+        <!-- Home -->
+        <section class="page" data-view="home" hidden>
+          <header class="page-head">
+            <h1 class="display" id="greeting"></h1>
+            <div class="stat-row" id="stats"></div>
+          </header>
+
+          <div class="banner" id="home-banner" hidden></div>
+
+          <div class="hero">
+            <div class="hero-text">
+              <h2>Hold <span class="keys" id="hero-key"></span> to dictate in any app</h2>
+              <p id="hero-sub">Works in WhatsApp, Slack, Mail, Notes and your browser. Release the key and your words appear where you’re typing.</p>
+            </div>
+            <div class="hero-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+
+          <div class="practice">
+            <textarea class="input" id="practice" rows="2" placeholder="Practice here: click, hold your key and say “um so let’s meet at three, no wait, four”"></textarea>
+            <button class="btn btn-sm" id="practice-btn">Dictate here</button>
+          </div>
+
+          <div class="section-head">
+            <h3>History</h3>
+            <input class="input search" id="history-search" type="search" placeholder="Search" aria-label="Search history" />
+          </div>
+          <div id="history"></div>
+        </section>
+
+        <!-- Dictionary -->
+        <section class="page" data-view="dictionary" hidden>
+          <header class="page-head split">
+            <div>
+              <h1 class="display">Dictionary</h1>
+              <p class="muted">Names, product terms and acronyms bewithflow should always spell your way.</p>
+            </div>
+            <button class="btn btn-primary" id="dict-add-btn">Add new</button>
+          </header>
+          <form class="add-inline" id="dict-form" hidden>
+            <input class="input" id="dict-input" placeholder="e.g. Laksh, Supabase, OKRs" maxlength="80" aria-label="New word" />
+            <button class="btn btn-primary" type="submit">Add word</button>
+            <button class="btn btn-ghost" type="button" id="dict-cancel">Cancel</button>
+          </form>
+          <div class="list" id="words"></div>
+        </section>
+
+        <!-- Snippets -->
+        <section class="page" data-view="snippets" hidden>
+          <header class="page-head split">
+            <div>
+              <h1 class="display">Snippets</h1>
+              <p class="muted">Say a short phrase, get the full text. Great for links, addresses and sign-offs.</p>
+            </div>
+            <button class="btn btn-primary" id="snip-add-btn">Add new</button>
+          </header>
+          <div class="list" id="snippets"></div>
+        </section>
+
+        <!-- Style -->
+        <section class="page" data-view="style" hidden>
+          <header class="page-head">
+            <h1 class="display">Style</h1>
+            <p class="muted">bewithflow writes differently depending on the app you’re in. Pick how you sound in each.</p>
+          </header>
+          <div class="tabs" role="tablist" id="style-tabs"></div>
+          <p class="muted small" id="style-apps"></p>
+          <div class="style-grid" id="style-cards"></div>
+          <div class="card cleanup-card">
+            <div>
+              <b>How much to clean up</b>
+              <p class="muted small" id="level-desc"></p>
+            </div>
+            <div class="seg" data-seg="cleanupLevel">
+              <button data-value="light">Light</button><button data-value="standard">Standard</button><button data-value="polished">Polished</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ================= Settings modal ================= -->
+    <div class="modal" id="settings" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-card settings-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <nav class="settings-nav" aria-label="Settings sections">
+          <h2 id="settings-title">Settings</h2>
+          <button data-stab="general">General</button>
+          <button data-stab="ai">AI &amp; speech</button>
+          <button data-stab="system">System</button>
+          <button data-stab="account">Account</button>
+        </nav>
+        <div class="settings-body" id="settings-body">
+          <button class="icon-btn close" data-close aria-label="Close settings">✕</button>
+
+          <section data-spane="general">
+            <h3>Shortcuts</h3>
+            <div class="setting" id="ptt-setting">
+              <div><b>Hold to talk</b><small>Hold this key in any app and speak. Release to paste.</small></div>
+              <div class="chip-picker" id="ptt-picker"></div>
+            </div>
+            <div class="setting">
+              <div><b>Hands-free</b><small>Press once to start, again to finish. Or double-tap your hold key.</small></div>
+              <div class="row-gap"><span class="keys" id="sc-main"></span><button class="btn btn-sm" data-capture="shortcut">Change</button></div>
+            </div>
+            <div class="setting">
+              <div><b>Paste last transcript</b><small>Paste your last dictation again</small></div>
+              <div class="row-gap"><span class="keys" id="sc-paste"></span><button class="btn btn-sm" data-capture="pasteLastShortcut">Change</button></div>
+            </div>
+            <div class="setting">
+              <div><b>Cancel</b><small>While recording</small></div>
+              <span class="keys"><kbd>Esc</kbd></span>
+            </div>
+            <h3>Language</h3>
+            <div class="setting">
+              <div><b>Language you speak</b><small>The speech engine listens for this language</small></div>
+              <select class="input select" id="language">
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="pt">Portuguese</option>
+                <option value="it">Italian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="zh">Chinese</option>
+                <option value="ar">Arabic</option>
+              </select>
+            </div>
+          </section>
+
+          <section data-spane="ai" hidden>
+            <h3>ChatGPT</h3>
+            <div class="card-lite" data-chatgpt-card></div>
+            <div class="setting">
+              <div><b>ChatGPT model</b><small>Faster models paste sooner</small></div>
+              <div class="row-gap">
+                <select class="input select" id="model-select" aria-label="ChatGPT model"></select>
+                <button class="btn btn-sm btn-ghost" id="model-refresh">Reload</button>
+              </div>
+            </div>
+            <h3>Speech engine</h3>
+            <div class="card-lite" data-speech-card></div>
+            <h3>On-device cleanup</h3>
+            <div class="card-lite" data-cleaner-card></div>
+            <h3>Master prompt</h3>
+            <p class="muted small">The rules your AI follows for every dictation. Your style, dictionary and snippets are added automatically.</p>
+            <textarea class="input prompt-box" id="prompt" spellcheck="false"></textarea>
+            <div class="row-gap" style="margin-top: 10px">
+              <button class="btn btn-sm btn-primary" id="prompt-save">Save prompt</button>
+              <button class="btn btn-sm" id="prompt-reset">Reset to default</button>
+              <span class="chip" id="prompt-state"></span>
+            </div>
+          </section>
+
+          <section data-spane="system" hidden>
+            <h3>App</h3>
+            <div class="setting">
+              <div><b>Show Flow Bar at all times</b><small>The small bar at the bottom of your screen. When off, it appears only while you dictate.</small></div>
+              <label class="switch"><input type="checkbox" data-toggle="alwaysShowBar" aria-label="Show Flow Bar at all times" /><span></span></label>
+            </div>
+            <div class="setting">
+              <div><b>Launch at login</b><small>Start bewithflow when you log in to your computer</small></div>
+              <label class="switch"><input type="checkbox" data-toggle="launchAtLogin" aria-label="Launch at login" /><span></span></label>
+            </div>
+            <div class="setting">
+              <div><b>Sounds</b><small>A soft tone when listening starts and stops</small></div>
+              <label class="switch"><input type="checkbox" data-toggle="playSounds" aria-label="Sounds" /><span></span></label>
+            </div>
+            <div class="setting">
+              <div><b>Restore my clipboard</b><small>Put back what you had copied after pasting</small></div>
+              <label class="switch"><input type="checkbox" data-toggle="restoreClipboard" aria-label="Restore my clipboard" /><span></span></label>
+            </div>
+            <h3>Permissions</h3>
+            <div data-perms></div>
+          </section>
+
+          <section data-spane="account" hidden>
+            <h3>Account</h3>
+            <div class="setting">
+              <div><b id="acct-name"></b><small id="acct-email"></small></div>
+              <div class="row-gap">
+                <button class="btn btn-sm" id="switch-account">Use another account</button>
+                <button class="btn btn-sm" id="signout">Sign out</button>
+              </div>
+            </div>
+            <div class="setting">
+              <div><b>Remove from this computer</b><small>Signs out and deletes this account’s settings, dictionary, snippets and history here. Your ChatGPT account isn’t affected.</small></div>
+              <button class="btn btn-sm btn-danger" id="forget-account">Remove</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Snippet editor ================= -->
+    <div class="modal" id="snip-modal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <form class="modal-card snip-card" id="snip-form" role="dialog" aria-modal="true" aria-labelledby="snip-title">
+        <h2 id="snip-title">Add snippet</h2>
+        <label class="field"><span>Snippet</span><input class="input" id="snip-trigger" maxlength="60" placeholder="my calendly link" /></label>
+        <label class="field"><span>Expansion</span><textarea class="input" id="snip-expansion" rows="5" maxlength="4000" placeholder="https://calendly.com/you/30min"></textarea></label>
+        <p class="error-text" id="snip-error" role="alert"></p>
+        <div class="row-gap end">
+          <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+          <button class="btn btn-primary" type="submit" id="snip-save">Add snippet</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="diff.js"></script>
+    <script src="hub.js"></script>
+  </body>
+</html>

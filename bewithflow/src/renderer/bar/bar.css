@@ -1,0 +1,197 @@
+/* Flow Bar: a small black pill at the bottom of the screen */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+  font: 500 12.5px/1 'Inter', -apple-system, 'Segoe UI', sans-serif;
+}
+
+.pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 10px;
+  width: 44px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(14, 14, 14, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  color: #fff;
+  transition:
+    width 220ms cubic-bezier(0.25, 0.9, 0.3, 1.05),
+    height 220ms cubic-bezier(0.25, 0.9, 0.3, 1.05),
+    background 160ms;
+}
+
+.pill > * {
+  display: none;
+}
+
+/* idle: a slim handle that opens into a hint on hover */
+.pill[data-state='idle']:hover {
+  width: 200px;
+  height: 30px;
+  background: #0e0e0e;
+  cursor: pointer;
+}
+.pill[data-state='idle']:hover .hint {
+  display: block;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* listening */
+.pill[data-state='listening'] {
+  width: 104px;
+  height: 34px;
+  background: #0e0e0e;
+}
+.pill[data-state='listening'][data-mode='handsfree'] {
+  width: 158px;
+  padding: 0 5px;
+  justify-content: space-between;
+}
+.pill[data-state='listening'] .meter {
+  display: flex;
+}
+.pill[data-state='listening'][data-mode='handsfree'] .ctl {
+  display: grid;
+}
+
+.meter {
+  align-items: center;
+  gap: 2.5px;
+  height: 20px;
+}
+.meter b {
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+  transition: height 60ms linear;
+}
+
+.ctl {
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+}
+.ctl svg {
+  width: 11px;
+  height: 11px;
+}
+.cancel {
+  background: rgba(255, 255, 255, 0.16);
+}
+.cancel:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.stop {
+  background: #e5484d;
+}
+.stop:hover {
+  background: #f2555a;
+}
+.stop i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #fff;
+}
+
+/* processing */
+.pill[data-state='processing'] {
+  width: 64px;
+  height: 30px;
+  background: #0e0e0e;
+}
+.pill[data-state='processing'] .dots {
+  display: flex;
+  gap: 5px;
+}
+.dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  animation: wave 900ms ease-in-out infinite;
+}
+.dots i:nth-child(2) {
+  animation-delay: 120ms;
+}
+.dots i:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+/* result messages */
+.pill[data-state='done'],
+.pill[data-state='error'],
+.pill[data-state='info'] {
+  width: auto;
+  max-width: 250px;
+  height: 30px;
+  padding: 0 14px;
+  background: #0e0e0e;
+}
+.pill[data-state='done'] .msg,
+.pill[data-state='error'] .msg,
+.pill[data-state='info'] .msg {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pill[data-state='done'] .msg::before {
+  content: '✓  ';
+  color: #4cc38a;
+}
+.pill[data-state='error'] .msg {
+  color: #ff8a80;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+  .dots i {
+    animation: none;
+  }
+}

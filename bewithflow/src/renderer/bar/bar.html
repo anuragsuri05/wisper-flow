@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" />
+    <link rel="stylesheet" href="bar.css" />
+    <title>bewithflow bar</title>
+  </head>
+  <body>
+    <div class="pill" id="pill" data-state="idle" data-mode="hold" role="status" aria-live="polite">
+      <span class="hint" id="hint">Click or hold fn to dictate</span>
+      <button class="ctl cancel" id="cancel" aria-label="Cancel dictation" tabindex="-1">
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+      </button>
+      <span class="meter" id="meter" aria-hidden="true"></span>
+      <button class="ctl stop" id="stop" aria-label="Finish dictation" tabindex="-1"><i></i></button>
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="msg" id="msg"></span>
+    </div>
+    <script src="bar.js"></script>
+  </body>
+</html>

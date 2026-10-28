@@ -1,0 +1,90 @@
+{
+  "name": "bewithflow",
+  "productName": "bewithflow",
+  "version": "1.0.0",
+  "description": "Speak anywhere, get clean text. Hold a key in any app and bewithflow types what you meant.",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/electron.js .",
+    "test": "node --test test/*.test.js",
+    "build:helper": "sh scripts/build-helper.sh",
+    "build:icons": "node scripts/electron.js scripts/make-icons.js",
+    "prepare:mac": "npm run build:helper && node scripts/ensure-mac-deps.js",
+    "dist:mac": "npm run prepare:mac && electron-builder --mac --x64 --arm64 --publish never",
+    "dist:mac:intel": "npm run prepare:mac && electron-builder --mac --x64 --publish never",
+    "dist:mac:apple-silicon": "npm run prepare:mac && electron-builder --mac --arm64 --publish never",
+    "selftest:mac": "node scripts/selftest-mac.js"
+  },
+  "build": {
+    "appId": "com.bewithflow.app",
+    "productName": "bewithflow",
+    "copyright": "Copyright \u00a9 2026 bewithflow",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "!node_modules/onnxruntime-web/**",
+      "!node_modules/onnxruntime-node/bin/napi-v3/linux/**",
+      "!node_modules/onnxruntime-node/bin/napi-v3/win32/**"
+    ],
+    "asarUnpack": [
+      "node_modules/onnxruntime-node/**",
+      "node_modules/sharp/**",
+      "node_modules/@img/**"
+    ],
+    "npmRebuild": false,
+    "afterSign": "scripts/after-sign.js",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg"
+        },
+        {
+          "target": "zip"
+        }
+      ],
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "minimumSystemVersion": "12.0",
+      "notarize": false,
+      "extraResources": [
+        {
+          "from": "native/mac/build/bwf-keyhook",
+          "to": "bwf-keyhook"
+        }
+      ],
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "bewithflow listens only while you hold your dictation key.",
+        "NSAppleEventsUsageDescription": "bewithflow pastes your dictation into the app you are typing in.",
+        "LSUIElement": false
+      }
+    },
+    "dmg": {
+      "title": "${productName} ${version} (${arch})",
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    },
+    "publish": null
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "electron-updater": "^6.8.9",
+    "undici": "^6.29.0"
+  },
+  "author": {
+    "name": "bewithflow"
+  },
+  "homepage": "https://bewithflow.app"
+}
